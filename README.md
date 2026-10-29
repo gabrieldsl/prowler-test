@@ -93,6 +93,16 @@ Para mudar a pasta de saída:
 python scan_aws.py --profiles producao --output-dir meus-relatorios
 ```
 
+**Se sua equipe orientou ignorar erros de certificado:**
+
+```bash
+python scan_aws.py --profiles producao --no-verify-ssl
+```
+
+Também funciona com `--all-profiles`. Essa opção foi adicionada ao **script**: ela aplica o equivalente a `verify=False` nos clientes AWS criados pelo Botocore, tanto na confirmação da conta quanto no processo do Prowler. O worker configura isso antes de importar o Prowler, incluindo clientes internos de STS/AssumeRole e SSO do SDK. Não é uma opção nativa repassada à CLI do Prowler.
+
+A opção vale apenas para essa execução, mantém HTTPS e desativa a verificação de identidade do servidor, permitindo interceptação da conexão. Sem a opção, a validação continua habilitada. Ela não configura o `aws sso login`, `credential_process`, pip ou outras ferramentas externas, nem chamadas feitas fora do Botocore. O campo `tls_verification` no `resumo.json` registra o modo usado. Se disponível, configurar a CA da empresa com `AWS_CA_BUNDLE` permite manter a validação.
+
 Cada profile representa uma execução. Profiles diferentes para a mesma conta repetem a varredura; profiles de origem usados apenas para assumir roles também entram em `--all-profiles`. Use `--profiles` para escolher só as contas desejadas. O script não descobre automaticamente contas do AWS Organizations.
 
 ## 5. Ler os resultados
