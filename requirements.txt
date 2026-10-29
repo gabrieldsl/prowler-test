@@ -1,0 +1,2 @@
+# O Prowler instala a versao de boto3 compativel como dependencia.
+prowler==5.46.0
